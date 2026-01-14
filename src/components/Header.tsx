@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Globe, Footprints, Receipt } from 'lucide-react';
+import { Globe, Footprints, Receipt, Moon, Sun } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Header: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
   const location = useLocation();
+  const [isDark, setIsDark] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') === 'dark' ||
+        (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  }, [isDark]);
 
   const toggleLanguage = () => {
     setLanguage(language === 'ar' ? 'en' : 'ar');
+  };
+
+  const toggleTheme = () => {
+    setIsDark(!isDark);
   };
 
   const isExpensesPage = location.pathname === '/expenses';
@@ -29,21 +50,25 @@ const Header: React.FC = () => {
         <div className="flex items-center gap-2">
           <Link
             to={isExpensesPage ? '/' : '/expenses'}
-            className="flex items-center gap-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors px-4 py-2 rounded-xl"
+            className="flex items-center gap-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors px-3 py-2 rounded-xl"
           >
             {isExpensesPage ? (
               <Footprints className="w-5 h-5" />
             ) : (
               <Receipt className="w-5 h-5" />
             )}
-            <span className="font-semibold text-sm">
-              {isExpensesPage ? t.activities : t.expenses}
-            </span>
           </Link>
+
+          <button
+            onClick={toggleTheme}
+            className="flex items-center gap-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors px-3 py-2 rounded-xl"
+          >
+            {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          </button>
           
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors px-4 py-2 rounded-xl"
+            className="flex items-center gap-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors px-3 py-2 rounded-xl"
           >
             <Globe className="w-5 h-5" />
             <span className="font-semibold">{language === 'ar' ? 'EN' : 'عربي'}</span>
