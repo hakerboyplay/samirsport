@@ -1,0 +1,9 @@
+{
+  "appId": "app.lovable.92909b0599ad4a94b000e227cd0a02c7",
+  "appName": "Samir Sport",
+  "webDir": "dist",
+  "server": {
+    "url": "https://92909b05-99ad-4a94-b000-e227cd0a02c7.lovableproject.com?forceHideBadge=true",
+    "cleartext": true
+  }
+}
