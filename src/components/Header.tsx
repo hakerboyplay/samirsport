@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Globe } from 'lucide-react';
+import { Globe, Footprints } from 'lucide-react';
 
 const Header: React.FC = () => {
   const { language, setLanguage, t } = useLanguage();
@@ -14,7 +14,7 @@ const Header: React.FC = () => {
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-primary-foreground/20 rounded-2xl flex items-center justify-center">
-            <span className="text-2xl">🏃</span>
+            <Footprints className="w-7 h-7" />
           </div>
           <div>
             <h1 className="text-2xl font-bold">{t.appName}</h1>

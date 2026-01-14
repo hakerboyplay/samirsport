@@ -1,7 +1,7 @@
 import React from 'react';
 import { Activity, ActivityType } from '@/types/activity';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Check, Share2, Trash2, Edit, Calendar, Clock } from 'lucide-react';
+import { Check, Share2, Trash2, Edit, Calendar, Clock, PersonStanding, Dumbbell, Moon, Trophy, FileText, LucideIcon } from 'lucide-react';
 import { format, isToday, isFuture, isPast } from 'date-fns';
 import { ar, enUS } from 'date-fns/locale';
 import { toast } from 'sonner';
@@ -13,12 +13,12 @@ interface ActivityCardProps {
   onEdit: (activity: Activity) => void;
 }
 
-const typeIcons: Record<ActivityType, string> = {
-  running: '🏃',
-  training: '💪',
-  rest: '😴',
-  competition: '🏆',
-  other: '📝',
+const typeIcons: Record<ActivityType, LucideIcon> = {
+  running: PersonStanding,
+  training: Dumbbell,
+  rest: Moon,
+  competition: Trophy,
+  other: FileText,
 };
 
 const typeColors: Record<ActivityType, string> = {
@@ -82,7 +82,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
       }`}
     >
       <div className="flex items-start gap-3">
-        <button
+      <button
           onClick={() => onToggleComplete(activity.id)}
           className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all shrink-0 ${
             activity.completed
@@ -93,7 +93,7 @@ const ActivityCard: React.FC<ActivityCardProps> = ({
           {activity.completed ? (
             <Check className="w-5 h-5" />
           ) : (
-            <span className="text-xl">{typeIcons[activity.type]}</span>
+            React.createElement(typeIcons[activity.type], { className: "w-5 h-5" })
           )}
         </button>
 
