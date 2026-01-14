@@ -2,7 +2,6 @@ import React, { useState, useMemo } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useActivities } from '@/hooks/useActivities';
 import { Activity } from '@/types/activity';
-import Header from '@/components/Header';
 import ActivityCard from '@/components/ActivityCard';
 import ActivityForm from '@/components/ActivityForm';
 import FilterTabs, { FilterType } from '@/components/FilterTabs';
@@ -23,7 +22,6 @@ const Index: React.FC = () => {
   const filteredActivities = useMemo(() => {
     let filtered = activities;
 
-    // Apply search filter
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
@@ -33,7 +31,6 @@ const Index: React.FC = () => {
       );
     }
 
-    // Apply tab filter
     switch (activeFilter) {
       case 'today':
         filtered = filtered.filter((a) => isToday(new Date(a.date)));
@@ -46,7 +43,6 @@ const Index: React.FC = () => {
         break;
     }
 
-    // Sort by date (newest first for past, soonest first for future)
     return filtered.sort((a, b) => {
       const dateA = new Date(a.date);
       const dateB = new Date(b.date);
@@ -74,42 +70,38 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-24">
-      <Header />
+    <div className="container py-4">
+      {/* Search */}
+      <div className="relative mb-4">
+        <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={t.search}
+          className="input-sport w-full ps-12"
+        />
+      </div>
 
-      <main className="container py-4">
-        {/* Search */}
-        <div className="relative mb-4">
-          <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={t.search}
-            className="input-sport w-full ps-12"
-          />
-        </div>
+      {/* Filter Tabs */}
+      <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
 
-        {/* Filter Tabs */}
-        <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
-
-        {/* Activities List */}
-        <div className="mt-4 space-y-4">
-          {filteredActivities.length === 0 ? (
-            <EmptyState onAddClick={() => setShowForm(true)} />
-          ) : (
-            filteredActivities.map((activity) => (
-              <ActivityCard
-                key={activity.id}
-                activity={activity}
-                onToggleComplete={toggleComplete}
-                onDelete={deleteActivity}
-                onEdit={handleEdit}
-              />
-            ))
-          )}
-        </div>
-      </main>
+      {/* Activities List */}
+      <div className="mt-4 space-y-4">
+        {filteredActivities.length === 0 ? (
+          <EmptyState onAddClick={() => setShowForm(true)} />
+        ) : (
+          filteredActivities.map((activity) => (
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              onToggleComplete={toggleComplete}
+              onDelete={deleteActivity}
+              onEdit={handleEdit}
+            />
+          ))
+        )}
+      </div>
 
       {/* Floating Add Button */}
       {activities.length > 0 && (
