@@ -1,12 +1,129 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState, useMemo } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useActivities } from '@/hooks/useActivities';
+import { Activity } from '@/types/activity';
+import Header from '@/components/Header';
+import ActivityCard from '@/components/ActivityCard';
+import ActivityForm from '@/components/ActivityForm';
+import FilterTabs, { FilterType } from '@/components/FilterTabs';
+import EmptyState from '@/components/EmptyState';
+import FloatingAddButton from '@/components/FloatingAddButton';
+import { isToday, isFuture } from 'date-fns';
+import { Search } from 'lucide-react';
 
-const Index = () => {
+const Index: React.FC = () => {
+  const { t } = useLanguage();
+  const { activities, addActivity, updateActivity, deleteActivity, toggleComplete } = useActivities();
+  
+  const [showForm, setShowForm] = useState(false);
+  const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredActivities = useMemo(() => {
+    let filtered = activities;
+
+    // Apply search filter
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (a) =>
+          a.title.toLowerCase().includes(query) ||
+          a.description.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply tab filter
+    switch (activeFilter) {
+      case 'today':
+        filtered = filtered.filter((a) => isToday(new Date(a.date)));
+        break;
+      case 'upcoming':
+        filtered = filtered.filter((a) => isFuture(new Date(a.date)));
+        break;
+      case 'completed':
+        filtered = filtered.filter((a) => a.completed);
+        break;
+    }
+
+    // Sort by date (newest first for past, soonest first for future)
+    return filtered.sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return dateB.getTime() - dateA.getTime();
+    });
+  }, [activities, activeFilter, searchQuery]);
+
+  const handleSubmit = (activityData: Omit<Activity, 'id' | 'createdAt'>) => {
+    if (editingActivity) {
+      updateActivity(editingActivity.id, activityData);
+    } else {
+      addActivity(activityData);
+    }
+    setEditingActivity(null);
+  };
+
+  const handleEdit = (activity: Activity) => {
+    setEditingActivity(activity);
+    setShowForm(true);
+  };
+
+  const handleCloseForm = () => {
+    setShowForm(false);
+    setEditingActivity(null);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background pb-24">
+      <Header />
+
+      <main className="container py-4">
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t.search}
+            className="input-sport w-full ps-12"
+          />
+        </div>
+
+        {/* Filter Tabs */}
+        <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+
+        {/* Activities List */}
+        <div className="mt-4 space-y-4">
+          {filteredActivities.length === 0 ? (
+            <EmptyState onAddClick={() => setShowForm(true)} />
+          ) : (
+            filteredActivities.map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
+                onToggleComplete={toggleComplete}
+                onDelete={deleteActivity}
+                onEdit={handleEdit}
+              />
+            ))
+          )}
+        </div>
+      </main>
+
+      {/* Floating Add Button */}
+      {activities.length > 0 && (
+        <FloatingAddButton onClick={() => setShowForm(true)} />
+      )}
+
+      {/* Activity Form Modal */}
+      {showForm && (
+        <ActivityForm
+          onSubmit={handleSubmit}
+          onClose={handleCloseForm}
+          editActivity={editingActivity}
+        />
+      )}
     </div>
   );
 };
