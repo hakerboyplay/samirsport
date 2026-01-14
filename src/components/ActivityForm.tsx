@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Activity, ActivityType } from '@/types/activity';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { X } from 'lucide-react';
+import { X, PersonStanding, Dumbbell, Moon, Trophy, FileText, LucideIcon } from 'lucide-react';
+
+const typeIconsMap: Record<ActivityType, LucideIcon> = {
+  running: PersonStanding,
+  training: Dumbbell,
+  rest: Moon,
+  competition: Trophy,
+  other: FileText,
+};
 
 interface ActivityFormProps {
   onSubmit: (activity: Omit<Activity, 'id' | 'createdAt'>) => void;
@@ -43,12 +51,12 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onSubmit, onClose, editActi
     onClose();
   };
 
-  const typeOptions: { value: ActivityType; label: string; icon: string }[] = [
-    { value: 'running', label: t.running, icon: '🏃' },
-    { value: 'training', label: t.training, icon: '💪' },
-    { value: 'rest', label: t.rest, icon: '😴' },
-    { value: 'competition', label: t.competition, icon: '🏆' },
-    { value: 'other', label: t.other, icon: '📝' },
+  const typeOptions: { value: ActivityType; label: string; Icon: LucideIcon }[] = [
+    { value: 'running', label: t.running, Icon: PersonStanding },
+    { value: 'training', label: t.training, Icon: Dumbbell },
+    { value: 'rest', label: t.rest, Icon: Moon },
+    { value: 'competition', label: t.competition, Icon: Trophy },
+    { value: 'other', label: t.other, Icon: FileText },
   ];
 
   return (
@@ -113,7 +121,7 @@ const ActivityForm: React.FC<ActivityFormProps> = ({ onSubmit, onClose, editActi
                       : 'bg-muted hover:bg-muted/80'
                   }`}
                 >
-                  <span className="text-xl block mb-1">{option.icon}</span>
+                  <option.Icon className="w-6 h-6 mx-auto mb-1" />
                   <span className="text-xs font-medium">{option.label}</span>
                 </button>
               ))}
