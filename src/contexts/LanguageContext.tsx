@@ -50,6 +50,10 @@ interface Translations {
   category: string;
   price: string;
   quantity: string;
+  // Prayer translations
+  prayer: string;
+  prayerTimes: string;
+  adhkar: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -101,6 +105,10 @@ const translations: Record<Language, Translations> = {
     category: 'الفئة',
     price: 'السعر',
     quantity: 'الكمية',
+    // Prayer translations
+    prayer: 'الصلاة',
+    prayerTimes: 'مواقيت الصلاة',
+    adhkar: 'الأذكار',
   },
   en: {
     appName: 'Samir Sport',
@@ -150,6 +158,10 @@ const translations: Record<Language, Translations> = {
     category: 'Category',
     price: 'Price',
     quantity: 'Quantity',
+    // Prayer translations
+    prayer: 'Prayer',
+    prayerTimes: 'Prayer Times',
+    adhkar: 'Adhkar',
   },
 };
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Globe, Footprints, Receipt, Moon, Sun } from 'lucide-react';
+import { Globe, Footprints, Receipt, Moon, Sun, Clock } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Header: React.FC = () => {
@@ -33,6 +33,13 @@ const Header: React.FC = () => {
   };
 
   const isExpensesPage = location.pathname === '/expenses';
+  const isPrayerPage = location.pathname === '/prayer';
+
+  const getPageTitle = () => {
+    if (isPrayerPage) return t.prayerTimes;
+    if (isExpensesPage) return t.expenses;
+    return t.activities;
+  };
 
   return (
     <header className="gradient-sport text-primary-foreground py-6 px-4 rounded-b-3xl shadow-floating">
@@ -43,20 +50,39 @@ const Header: React.FC = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold">{t.appName}</h1>
-            <p className="text-sm opacity-80">{isExpensesPage ? t.expenses : t.activities}</p>
+            <p className="text-sm opacity-80">{getPageTitle()}</p>
           </div>
         </div>
         
         <div className="flex items-center gap-2">
+          {/* Activities */}
           <Link
-            to={isExpensesPage ? '/' : '/expenses'}
-            className="flex items-center gap-2 bg-primary-foreground/20 hover:bg-primary-foreground/30 transition-colors px-3 py-2 rounded-xl"
+            to="/"
+            className={`flex items-center gap-2 transition-colors px-3 py-2 rounded-xl ${
+              location.pathname === '/' ? 'bg-primary-foreground/30' : 'bg-primary-foreground/20 hover:bg-primary-foreground/30'
+            }`}
           >
-            {isExpensesPage ? (
-              <Footprints className="w-5 h-5" />
-            ) : (
-              <Receipt className="w-5 h-5" />
-            )}
+            <Footprints className="w-5 h-5" />
+          </Link>
+
+          {/* Expenses */}
+          <Link
+            to="/expenses"
+            className={`flex items-center gap-2 transition-colors px-3 py-2 rounded-xl ${
+              isExpensesPage ? 'bg-primary-foreground/30' : 'bg-primary-foreground/20 hover:bg-primary-foreground/30'
+            }`}
+          >
+            <Receipt className="w-5 h-5" />
+          </Link>
+
+          {/* Prayer Times */}
+          <Link
+            to="/prayer"
+            className={`flex items-center gap-2 transition-colors px-3 py-2 rounded-xl ${
+              isPrayerPage ? 'bg-primary-foreground/30' : 'bg-primary-foreground/20 hover:bg-primary-foreground/30'
+            }`}
+          >
+            <Clock className="w-5 h-5" />
           </Link>
 
           <button
