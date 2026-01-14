@@ -31,6 +31,25 @@ interface Translations {
   type: string;
   search: string;
   all: string;
+  // Expense translations
+  expenses: string;
+  addExpense: string;
+  eggs: string;
+  raisins: string;
+  almonds: string;
+  water: string;
+  rice: string;
+  yogurt: string;
+  currency: string;
+  totalExpenses: string;
+  thisMonth: string;
+  noExpenses: string;
+  addFirstExpense: string;
+  foodName: string;
+  foodNamePlaceholder: string;
+  category: string;
+  price: string;
+  quantity: string;
 }
 
 const translations: Record<Language, Translations> = {
@@ -63,6 +82,25 @@ const translations: Record<Language, Translations> = {
     type: 'النوع',
     search: 'بحث...',
     all: 'الكل',
+    // Expense translations
+    expenses: 'فاتورة الأكل الصحي',
+    addExpense: 'إضافة مصروف',
+    eggs: 'البيض',
+    raisins: 'الزبيب',
+    almonds: 'اللوز',
+    water: 'الماء',
+    rice: 'الأرز',
+    yogurt: 'الياغورت',
+    currency: 'دج',
+    totalExpenses: 'إجمالي المصاريف',
+    thisMonth: 'هذا الشهر',
+    noExpenses: 'لا توجد مصاريف',
+    addFirstExpense: 'أضف مصروفك الأول',
+    foodName: 'اسم الطعام',
+    foodNamePlaceholder: 'مثال: بيض بلدي',
+    category: 'الفئة',
+    price: 'السعر',
+    quantity: 'الكمية',
   },
   en: {
     appName: 'Samir Sport',
@@ -93,6 +131,25 @@ const translations: Record<Language, Translations> = {
     type: 'Type',
     search: 'Search...',
     all: 'All',
+    // Expense translations
+    expenses: 'Healthy Food Expenses',
+    addExpense: 'Add Expense',
+    eggs: 'Eggs',
+    raisins: 'Raisins',
+    almonds: 'Almonds',
+    water: 'Water',
+    rice: 'Rice',
+    yogurt: 'Yogurt',
+    currency: 'DZD',
+    totalExpenses: 'Total Expenses',
+    thisMonth: 'This Month',
+    noExpenses: 'No expenses',
+    addFirstExpense: 'Add your first expense',
+    foodName: 'Food Name',
+    foodNamePlaceholder: 'e.g., Organic Eggs',
+    category: 'Category',
+    price: 'Price',
+    quantity: 'Quantity',
   },
 };
 
