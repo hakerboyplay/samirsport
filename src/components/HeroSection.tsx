@@ -83,7 +83,7 @@ const HeroSection: React.FC = () => {
         {/* Bottom - Dhikr */}
         {currentDhikr && (
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
-            <p className="text-white text-center text-sm leading-relaxed font-arabic line-clamp-2">
+            <p className="text-white text-center text-base leading-relaxed line-clamp-2" style={{ fontFamily: 'Cairo, sans-serif' }}>
               {currentDhikr.arabic}
             </p>
           </div>

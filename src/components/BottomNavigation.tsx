@@ -1,16 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Home, Clock, BookOpen, User, BookMarked } from 'lucide-react';
+import { Home, Clock, BookOpen, User, Receipt } from 'lucide-react';
 
 const BottomNavigation: React.FC = () => {
   const { language } = useLanguage();
 
   const navItems = [
-    { path: '/debts', icon: BookMarked, labelAr: 'الكناش', labelEn: 'Debts' },
     { path: '/prayer', icon: Clock, labelAr: 'الصلاة', labelEn: 'Prayer' },
-    { path: '/', icon: Home, labelAr: 'الرئيسية', labelEn: 'Home', isCenter: true },
     { path: '/quran', icon: BookOpen, labelAr: 'القرآن', labelEn: 'Quran' },
+    { path: '/', icon: Home, labelAr: 'الرئيسية', labelEn: 'Home', isCenter: true },
+    { path: '/expenses', icon: Receipt, labelAr: 'المصاريف', labelEn: 'Expenses' },
     { path: '/profile', icon: User, labelAr: 'حسابي', labelEn: 'Profile' },
   ];
 

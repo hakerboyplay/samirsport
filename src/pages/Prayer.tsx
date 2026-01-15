@@ -2,17 +2,21 @@ import React, { useState, useMemo } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import PrayerTimeCard from '@/components/PrayerTimeCard';
 import DhikrCard from '@/components/DhikrCard';
+import QiblaCompass from '@/components/QiblaCompass';
+import PrayerNotifications from '@/components/PrayerNotifications';
+import RamadanAlarm from '@/components/RamadanAlarm';
 import { useGeolocation } from '@/hooks/useGeolocation';
 import { usePrayerTimesGPS } from '@/hooks/usePrayerTimesGPS';
 import { adhkar } from '@/data/adhkar';
-import { MapPin, Clock, BookOpen, Loader2, Navigation, RefreshCw } from 'lucide-react';
+import { MapPin, Clock, BookOpen, Loader2, Navigation, RefreshCw, Compass, Bell } from 'lucide-react';
 
 type DhikrCategory = 'all' | 'morning' | 'evening' | 'sleep' | 'food' | 'travel' | 'general';
 
 const Prayer: React.FC = () => {
   const { language } = useLanguage();
-  const [activeTab, setActiveTab] = useState<'prayer' | 'adhkar'>('prayer');
+  const [activeTab, setActiveTab] = useState<'prayer' | 'adhkar' | 'qibla'>('prayer');
   const [dhikrCategory, setDhikrCategory] = useState<DhikrCategory>('all');
+  const [showNotifications, setShowNotifications] = useState(false);
 
   const { latitude, longitude, loading: geoLoading, error: geoError, requestLocation } = useGeolocation();
   const { prayerTimes, loading: prayerLoading, error: prayerError, locationName } = usePrayerTimesGPS(latitude, longitude);
@@ -57,21 +61,32 @@ const Prayer: React.FC = () => {
   return (
     <div className="container py-4">
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex gap-2 mb-4 overflow-x-auto pb-2">
         <button
           onClick={() => setActiveTab('prayer')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all ${
+          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${
             activeTab === 'prayer'
               ? 'bg-primary text-primary-foreground'
               : 'bg-muted text-muted-foreground'
           }`}
         >
           <Clock className="w-5 h-5" />
-          <span>{language === 'ar' ? 'المواقيت' : 'Prayer Times'}</span>
+          <span>{language === 'ar' ? 'المواقيت' : 'Times'}</span>
+        </button>
+        <button
+          onClick={() => setActiveTab('qibla')}
+          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${
+            activeTab === 'qibla'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-muted-foreground'
+          }`}
+        >
+          <Compass className="w-5 h-5" />
+          <span>{language === 'ar' ? 'القبلة' : 'Qibla'}</span>
         </button>
         <button
           onClick={() => setActiveTab('adhkar')}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold transition-all ${
+          className={`flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all whitespace-nowrap ${
             activeTab === 'adhkar'
               ? 'bg-primary text-primary-foreground'
               : 'bg-muted text-muted-foreground'
@@ -139,7 +154,36 @@ const Prayer: React.FC = () => {
               ))}
             </div>
           ) : null}
+
+          {/* Notifications & Ramadan Alarms */}
+          {prayerTimes && (
+            <div className="mt-6 space-y-4">
+              <PrayerNotifications 
+                prayerTimes={[
+                  { name: 'Fajr', time: prayerTimes.Fajr, nameAr: 'الفجر' },
+                  { name: 'Dhuhr', time: prayerTimes.Dhuhr, nameAr: 'الظهر' },
+                  { name: 'Asr', time: prayerTimes.Asr, nameAr: 'العصر' },
+                  { name: 'Maghrib', time: prayerTimes.Maghrib, nameAr: 'المغرب' },
+                  { name: 'Isha', time: prayerTimes.Isha, nameAr: 'العشاء' },
+                ]}
+              />
+              <RamadanAlarm fajrTime={prayerTimes.Fajr} maghribTime={prayerTimes.Maghrib} />
+            </div>
+          )}
         </>
+      )}
+
+      {activeTab === 'qibla' && latitude && longitude && (
+        <QiblaCompass latitude={latitude} longitude={longitude} />
+      )}
+
+      {activeTab === 'qibla' && (!latitude || !longitude) && (
+        <div className="text-center py-12">
+          <Compass className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
+          <p className="text-muted-foreground">
+            {language === 'ar' ? 'يرجى تفعيل الموقع لتحديد اتجاه القبلة' : 'Please enable location to find Qibla direction'}
+          </p>
+        </div>
       )}
 
       {activeTab === 'adhkar' && (
