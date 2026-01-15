@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { Menu, Footprints } from 'lucide-react';
+import { Menu, Footprints, Sparkles } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 
 interface MobileHeaderProps {
@@ -19,31 +19,40 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ onMenuClick }) => {
         return t.prayerTimes;
       case '/quran':
         return language === 'ar' ? 'القرآن الكريم' : 'Holy Quran';
+      case '/profile':
+        return language === 'ar' ? 'حسابي' : 'My Profile';
+      case '/debts':
+        return language === 'ar' ? 'الكناش' : 'Debts Book';
       default:
         return t.activities;
     }
   };
 
   return (
-    <header className="gradient-sport text-primary-foreground py-4 px-4 shadow-floating sticky top-0 z-30">
-      <div className="flex items-center justify-between">
+    <header className="gradient-sport text-primary-foreground py-3 px-4 shadow-floating fixed top-0 left-0 right-0 z-30">
+      <div className="flex items-center justify-between max-w-lg mx-auto">
         <button
           onClick={onMenuClick}
-          className="p-2 hover:bg-primary-foreground/20 rounded-xl transition-colors"
+          className="p-2 hover:bg-primary-foreground/20 rounded-xl transition-all duration-300 hover:scale-105"
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-primary-foreground/20 rounded-lg flex items-center justify-center">
-            <Footprints className="w-5 h-5" />
+          <div className="relative">
+            <div className="w-9 h-9 bg-primary-foreground/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+              <Footprints className="w-5 h-5" />
+            </div>
+            <Sparkles className="w-3 h-3 absolute -top-1 -end-1 text-yellow-300 animate-pulse" />
           </div>
-          <h1 className="text-lg font-bold">{t.appName}</h1>
+          <div className="flex flex-col">
+            <h1 className="text-base font-bold leading-tight tracking-wide">{t.appName}</h1>
+            <p className="text-[10px] opacity-70 leading-none">{getPageTitle()}</p>
+          </div>
         </div>
 
-        <div className="w-10" /> {/* Spacer for centering */}
+        <div className="w-9" />
       </div>
-      <p className="text-center text-sm opacity-80 mt-1">{getPageTitle()}</p>
     </header>
   );
 };
