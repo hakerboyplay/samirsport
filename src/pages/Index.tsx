@@ -7,17 +7,19 @@ import ActivityForm from '@/components/ActivityForm';
 import FilterTabs, { FilterType } from '@/components/FilterTabs';
 import EmptyState from '@/components/EmptyState';
 import HeroSection from '@/components/HeroSection';
+import ActivityStats from '@/components/ActivityStats';
 import { isToday, isFuture } from 'date-fns';
-import { Search } from 'lucide-react';
+import { Search, BarChart3 } from 'lucide-react';
 
 const Index: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { activities, addActivity, updateActivity, deleteActivity, toggleComplete } = useActivities();
   
   const [showForm, setShowForm] = useState(false);
   const [editingActivity, setEditingActivity] = useState<Activity | null>(null);
   const [activeFilter, setActiveFilter] = useState<FilterType>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [showStats, setShowStats] = useState(false);
 
   const filteredActivities = useMemo(() => {
     let filtered = activities;
@@ -75,6 +77,19 @@ const Index: React.FC = () => {
       <HeroSection />
 
       <div className="container">
+        {/* Stats Toggle */}
+        <button
+          onClick={() => setShowStats(!showStats)}
+          className="flex items-center gap-2 mb-4 px-4 py-2 bg-card rounded-xl border border-border hover:border-primary/50 transition-all"
+        >
+          <BarChart3 className="w-5 h-5 text-primary" />
+          <span className="text-sm font-medium">
+            {language === 'ar' ? (showStats ? 'إخفاء الإحصائيات' : 'عرض الإحصائيات') : (showStats ? 'Hide Stats' : 'Show Stats')}
+          </span>
+        </button>
+
+        {/* Activity Statistics */}
+        {showStats && <ActivityStats activities={activities} />}
         {/* Search */}
         <div className="relative mb-4">
           <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useQuranSurahs, useSurahDetail } from '@/hooks/useQuran';
 import { Loader2, ArrowRight, ArrowLeft, BookOpen, Bookmark, BookmarkCheck } from 'lucide-react';
+import QuranSearch from '@/components/QuranSearch';
 
 interface ReadingPosition {
   surahNumber: number;
@@ -147,16 +148,27 @@ const Quran: React.FC = () => {
   return (
     <div className="container py-4">
       {/* Header */}
-      <div className="text-center mb-6">
-        <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-floating">
-          <BookOpen className="w-10 h-10 text-primary-foreground" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-14 h-14 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center shadow-floating">
+            <BookOpen className="w-7 h-7 text-primary-foreground" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-foreground font-quran">
+              {language === 'ar' ? 'القرآن الكريم' : 'Holy Quran'}
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              {language === 'ar' ? '١١٤ سورة' : '114 Surahs'}
+            </p>
+          </div>
         </div>
-        <h2 className="text-2xl font-bold text-foreground font-quran">
-          {language === 'ar' ? 'القرآن الكريم' : 'Holy Quran'}
-        </h2>
-        <p className="text-muted-foreground">
-          {language === 'ar' ? '١١٤ سورة' : '114 Surahs'}
-        </p>
+        <QuranSearch onSelectAyah={(surahNum, ayahNum) => {
+          setSelectedSurah(surahNum);
+          setTimeout(() => {
+            const el = document.getElementById(`ayah-${ayahNum}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 500);
+        }} />
       </div>
 
       {/* Resume Reading Card */}

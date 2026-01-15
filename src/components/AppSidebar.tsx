@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Footprints, Receipt, Clock, BookOpen, Moon, Sun, Globe, X } from 'lucide-react';
+import { Footprints, Receipt, Clock, BookOpen, Moon, Sun, Globe, X, BookMarked } from 'lucide-react';
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose, isDark, onTogg
 
   const navItems = [
     { path: '/', icon: Footprints, labelAr: 'الأنشطة', labelEn: 'Activities' },
-    { path: '/expenses', icon: Receipt, labelAr: 'المصاريف', labelEn: 'Expenses' },
+    { path: '/debts', icon: BookMarked, labelAr: 'الكناش', labelEn: 'Debts' },
     { path: '/prayer', icon: Clock, labelAr: 'الصلاة', labelEn: 'Prayer' },
     { path: '/quran', icon: BookOpen, labelAr: 'القرآن', labelEn: 'Quran' },
   ];
