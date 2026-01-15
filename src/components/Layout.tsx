@@ -53,7 +53,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         onToggleTheme={toggleTheme}
       />
       <MobileHeader onMenuClick={() => setSidebarOpen(true)} />
-      <main className="pt-16 pb-24">
+      <main className="pt-14 pb-20 transition-all duration-300">
         {children}
       </main>
       <BottomNavigation />

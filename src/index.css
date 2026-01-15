@@ -89,6 +89,11 @@
   html[dir="rtl"] {
     direction: rtl;
   }
+
+  /* Page transition animations */
+  .page-enter {
+    animation: fade-in 0.3s ease-out, slide-up 0.3s ease-out;
+  }
 }
 
 @layer utilities {

@@ -9,6 +9,8 @@ import Index from "./pages/Index";
 import Expenses from "./pages/Expenses";
 import Prayer from "./pages/Prayer";
 import Quran from "./pages/Quran";
+import Profile from "./pages/Profile";
+import Debts from "./pages/Debts";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
               <Route path="/expenses" element={<Expenses />} />
               <Route path="/prayer" element={<Prayer />} />
               <Route path="/quran" element={<Quran />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/debts" element={<Debts />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
