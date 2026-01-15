@@ -1,15 +1,58 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useQuranSurahs, useSurahDetail } from '@/hooks/useQuran';
-import { Loader2, ArrowRight, ArrowLeft, BookOpen } from 'lucide-react';
+import { Loader2, ArrowRight, ArrowLeft, BookOpen, Bookmark, BookmarkCheck } from 'lucide-react';
+
+interface ReadingPosition {
+  surahNumber: number;
+  surahName: string;
+  ayahNumber: number;
+}
 
 const Quran: React.FC = () => {
   const { language } = useLanguage();
   const { surahs, loading: surahsLoading, error: surahsError } = useQuranSurahs();
   const [selectedSurah, setSelectedSurah] = useState<number | null>(null);
   const { surah, loading: surahLoading, error: surahError } = useSurahDetail(selectedSurah);
+  const [readingPosition, setReadingPosition] = useState<ReadingPosition | null>(() => {
+    const saved = localStorage.getItem('quran-reading-position');
+    return saved ? JSON.parse(saved) : null;
+  });
 
   const BackIcon = language === 'ar' ? ArrowRight : ArrowLeft;
+
+  const saveReadingPosition = (surahNumber: number, surahName: string, ayahNumber: number) => {
+    const position = { surahNumber, surahName, ayahNumber };
+    setReadingPosition(position);
+    localStorage.setItem('quran-reading-position', JSON.stringify(position));
+  };
+
+  const resumeReading = () => {
+    if (readingPosition) {
+      setSelectedSurah(readingPosition.surahNumber);
+    }
+  };
+
+  // Scroll to saved ayah when surah loads
+  useEffect(() => {
+    if (surah && readingPosition && surah.number === readingPosition.surahNumber) {
+      setTimeout(() => {
+        const ayahElement = document.getElementById(`ayah-${readingPosition.ayahNumber}`);
+        if (ayahElement) {
+          ayahElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }, 300);
+    }
+  }, [surah, readingPosition]);
+
+  // Verse end symbol (۞) in unicode
+  const getAyahNumber = (num: number) => {
+    const arabicNumerals = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+    return String(num)
+      .split('')
+      .map((digit) => arabicNumerals[parseInt(digit)])
+      .join('');
+  };
 
   if (selectedSurah && surah) {
     return (
@@ -24,24 +67,37 @@ const Quran: React.FC = () => {
         </button>
 
         {/* Surah Header */}
-        <div className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-2xl p-6 mb-4 text-center">
-          <h2 className="text-3xl font-bold mb-2">{surah.name}</h2>
-          <p className="text-lg opacity-90">{surah.englishName}</p>
-          <p className="text-sm opacity-75 mt-1">
-            {surah.englishNameTranslation} • {surah.numberOfAyahs} {language === 'ar' ? 'آية' : 'verses'}
-          </p>
-          <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs ${
-            surah.revelationType === 'Meccan' ? 'bg-amber-500/20' : 'bg-emerald-500/20'
-          }`}>
-            {surah.revelationType === 'Meccan' ? (language === 'ar' ? 'مكية' : 'Meccan') : (language === 'ar' ? 'مدنية' : 'Medinan')}
-          </span>
+        <div className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-2xl p-6 mb-4 text-center relative overflow-hidden">
+          {/* Decorative Pattern */}
+          <div className="absolute inset-0 opacity-10">
+            <div className="absolute top-2 left-2 w-16 h-16 border-2 border-current rounded-full" />
+            <div className="absolute bottom-2 right-2 w-24 h-24 border-2 border-current rounded-full" />
+          </div>
+          
+          <div className="relative">
+            <h2 className="text-4xl font-bold mb-2 font-quran">{surah.name}</h2>
+            <p className="text-lg opacity-90">{surah.englishName}</p>
+            <p className="text-sm opacity-75 mt-1">
+              {surah.englishNameTranslation} • {surah.numberOfAyahs} {language === 'ar' ? 'آية' : 'verses'}
+            </p>
+            <span className={`inline-block mt-2 px-3 py-1 rounded-full text-xs ${
+              surah.revelationType === 'Meccan' ? 'bg-amber-500/20' : 'bg-emerald-500/20'
+            }`}>
+              {surah.revelationType === 'Meccan' ? (language === 'ar' ? 'مكية' : 'Meccan') : (language === 'ar' ? 'مدنية' : 'Medinan')}
+            </span>
+          </div>
         </div>
 
         {/* Bismillah */}
         {surah.number !== 1 && surah.number !== 9 && (
-          <p className="text-center text-2xl font-arabic text-primary mb-6">
-            بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ
-          </p>
+          <div className="text-center py-6 mb-4">
+            <p className="text-3xl font-quran text-primary">
+              بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ
+            </p>
+            <div className="flex justify-center mt-2">
+              <div className="w-32 h-0.5 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+            </div>
+          </div>
         )}
 
         {/* Ayahs */}
@@ -55,17 +111,33 @@ const Quran: React.FC = () => {
           </div>
         ) : (
           <div className="bg-card rounded-2xl p-6 border border-border">
-            <p className="text-xl leading-loose font-arabic text-foreground text-center">
-              {surah.ayahs.map((ayah, index) => (
-                <span key={ayah.number}>
-                  {ayah.text}{' '}
-                  <span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary text-sm mx-1">
-                    {ayah.numberInSurah}
+            <div className="text-center leading-[3] font-quran text-foreground">
+              {surah.ayahs.map((ayah) => (
+                <span 
+                  key={ayah.number} 
+                  id={`ayah-${ayah.numberInSurah}`}
+                  className={`inline ${
+                    readingPosition?.surahNumber === surah.number && 
+                    readingPosition?.ayahNumber === ayah.numberInSurah 
+                      ? 'bg-primary/10 rounded px-1' 
+                      : ''
+                  }`}
+                  onClick={() => saveReadingPosition(surah.number, surah.name, ayah.numberInSurah)}
+                >
+                  {ayah.text}
+                  <span className="inline-flex items-center justify-center mx-1 text-primary text-sm align-middle cursor-pointer hover:scale-110 transition-transform">
+                    ﴿{getAyahNumber(ayah.numberInSurah)}﴾
                   </span>
-                  {' '}
                 </span>
               ))}
-            </p>
+            </div>
+            
+            {/* Reading Position Indicator */}
+            <div className="mt-6 pt-4 border-t border-border text-center">
+              <p className="text-muted-foreground text-sm">
+                {language === 'ar' ? 'اضغط على رقم الآية لحفظ موضع القراءة' : 'Tap on verse number to save reading position'}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -76,16 +148,37 @@ const Quran: React.FC = () => {
     <div className="container py-4">
       {/* Header */}
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-3">
-          <BookOpen className="w-8 h-8 text-primary" />
+        <div className="w-20 h-20 bg-gradient-to-br from-primary to-primary/60 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-floating">
+          <BookOpen className="w-10 h-10 text-primary-foreground" />
         </div>
-        <h2 className="text-2xl font-bold text-foreground">
+        <h2 className="text-2xl font-bold text-foreground font-quran">
           {language === 'ar' ? 'القرآن الكريم' : 'Holy Quran'}
         </h2>
         <p className="text-muted-foreground">
-          {language === 'ar' ? '114 سورة' : '114 Surahs'}
+          {language === 'ar' ? '١١٤ سورة' : '114 Surahs'}
         </p>
       </div>
+
+      {/* Resume Reading Card */}
+      {readingPosition && (
+        <button
+          onClick={resumeReading}
+          className="w-full bg-gradient-to-r from-emerald-500/10 to-primary/10 border border-emerald-500/30 rounded-2xl p-4 mb-4 flex items-center gap-4 hover:border-primary/50 transition-all"
+        >
+          <div className="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center shrink-0">
+            <BookmarkCheck className="w-6 h-6 text-emerald-600" />
+          </div>
+          <div className="text-start flex-1">
+            <p className="text-sm text-muted-foreground">
+              {language === 'ar' ? 'متابعة القراءة' : 'Resume Reading'}
+            </p>
+            <p className="font-semibold text-foreground">
+              {readingPosition.surahName} - {language === 'ar' ? 'الآية' : 'Ayah'} {readingPosition.ayahNumber}
+            </p>
+          </div>
+          <ArrowLeft className={`w-5 h-5 text-muted-foreground ${language === 'ar' ? 'rotate-180' : ''}`} />
+        </button>
+      )}
 
       {/* Surahs List */}
       {surahsLoading ? (
@@ -102,22 +195,22 @@ const Quran: React.FC = () => {
             <button
               key={surah.number}
               onClick={() => setSelectedSurah(surah.number)}
-              className="flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-start"
+              className="flex items-center gap-4 p-4 bg-card rounded-xl border border-border hover:border-primary/50 hover:bg-muted/50 transition-all text-start group"
             >
-              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold shrink-0">
+              <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary font-bold shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                 {surah.number}
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="font-semibold text-foreground truncate">
-                    {surah.name}
+                    {surah.englishName}
                   </h3>
-                  <span className="text-lg font-arabic text-primary shrink-0">
+                  <span className="text-xl font-quran text-primary shrink-0">
                     {surah.name}
                   </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <span>{surah.englishName}</span>
+                  <span>{surah.englishNameTranslation}</span>
                   <span>•</span>
                   <span>{surah.numberOfAyahs} {language === 'ar' ? 'آية' : 'verses'}</span>
                   <span className={`px-2 py-0.5 rounded text-xs ${

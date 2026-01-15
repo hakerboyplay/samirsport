@@ -4,7 +4,6 @@ import { useExpenses } from '@/hooks/useExpenses';
 import { Expense, FoodCategory } from '@/types/expense';
 import ExpenseCard from '@/components/ExpenseCard';
 import ExpenseForm from '@/components/ExpenseForm';
-import FloatingAddButton from '@/components/FloatingAddButton';
 import { Receipt, TrendingUp, Calendar, Search } from 'lucide-react';
 
 const Expenses: React.FC = () => {
@@ -142,11 +141,6 @@ const Expenses: React.FC = () => {
           ))
         )}
       </div>
-
-      {/* Floating Add Button */}
-      {expenses.length > 0 && (
-        <FloatingAddButton onClick={() => setShowForm(true)} />
-      )}
 
       {/* Expense Form Modal */}
       {showForm && (
