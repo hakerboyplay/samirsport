@@ -4,6 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 
 @layer base {
   :root {
@@ -129,9 +130,10 @@
   }
 
   .font-quran {
-    font-family: 'Amiri Quran', 'Traditional Arabic', serif;
-    font-size: 1.5em;
-    line-height: 2.5;
+    font-family: 'Noto Naskh Arabic', 'Amiri Quran', 'Traditional Arabic', serif;
+    font-size: 1.4em;
+    line-height: 2.2;
+    font-weight: 500;
   }
 
   .safe-area-inset-bottom {

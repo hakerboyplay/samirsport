@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import AppSidebar from './AppSidebar';
 import MobileHeader from './MobileHeader';
 import BottomNavigation from './BottomNavigation';
-import FloatingNavButton from './FloatingNavButton';
+// FloatingNavButton removed - + button is now in BottomNavigation
 import ActivityForm from './ActivityForm';
 import { useActivities } from '@/hooks/useActivities';
 import { Activity } from '@/types/activity';
@@ -56,8 +56,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <main className="pt-14 pb-20 transition-all duration-300">
         {children}
       </main>
-      <BottomNavigation />
-      <FloatingNavButton onClick={() => setShowActivityForm(true)} />
+      <BottomNavigation onAddClick={() => setShowActivityForm(true)} />
+      {/* Removed FloatingNavButton since + is now in BottomNavigation */}
       
       {showActivityForm && (
         <ActivityForm
