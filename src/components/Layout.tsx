@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import AppSidebar from './AppSidebar';
 import MobileHeader from './MobileHeader';
+import BottomNavigation from './BottomNavigation';
+import FloatingNavButton from './FloatingNavButton';
+import ActivityForm from './ActivityForm';
+import { useActivities } from '@/hooks/useActivities';
+import { Activity } from '@/types/activity';
+import { useLocation } from 'react-router-dom';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -8,6 +14,9 @@ interface LayoutProps {
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showActivityForm, setShowActivityForm] = useState(false);
+  const { addActivity } = useActivities();
+  const location = useLocation();
   const [isDark, setIsDark] = useState(() => {
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') === 'dark' ||
@@ -30,6 +39,11 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
     setIsDark(!isDark);
   };
 
+  const handleAddActivity = (activityData: Omit<Activity, 'id' | 'createdAt'>) => {
+    addActivity(activityData);
+    setShowActivityForm(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <AppSidebar
@@ -39,9 +53,19 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         onToggleTheme={toggleTheme}
       />
       <MobileHeader onMenuClick={() => setSidebarOpen(true)} />
-      <main className="pb-24">
+      <main className="pt-16 pb-24">
         {children}
       </main>
+      <BottomNavigation />
+      <FloatingNavButton onClick={() => setShowActivityForm(true)} />
+      
+      {showActivityForm && (
+        <ActivityForm
+          onSubmit={handleAddActivity}
+          onClose={() => setShowActivityForm(false)}
+          editActivity={null}
+        />
+      )}
     </div>
   );
 };

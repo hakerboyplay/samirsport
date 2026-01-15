@@ -6,7 +6,7 @@ import ActivityCard from '@/components/ActivityCard';
 import ActivityForm from '@/components/ActivityForm';
 import FilterTabs, { FilterType } from '@/components/FilterTabs';
 import EmptyState from '@/components/EmptyState';
-import FloatingAddButton from '@/components/FloatingAddButton';
+import HeroSection from '@/components/HeroSection';
 import { isToday, isFuture } from 'date-fns';
 import { Search } from 'lucide-react';
 
@@ -70,43 +70,43 @@ const Index: React.FC = () => {
   };
 
   return (
-    <div className="container py-4">
-      {/* Search */}
-      <div className="relative mb-4">
-        <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={t.search}
-          className="input-sport w-full ps-12"
-        />
+    <div className="pb-24">
+      {/* Hero Section */}
+      <HeroSection />
+
+      <div className="container">
+        {/* Search */}
+        <div className="relative mb-4">
+          <Search className="absolute start-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={t.search}
+            className="input-sport w-full ps-12"
+          />
+        </div>
+
+        {/* Filter Tabs */}
+        <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+
+        {/* Activities List */}
+        <div className="mt-4 space-y-4">
+          {filteredActivities.length === 0 ? (
+            <EmptyState onAddClick={() => setShowForm(true)} />
+          ) : (
+            filteredActivities.map((activity) => (
+              <ActivityCard
+                key={activity.id}
+                activity={activity}
+                onToggleComplete={toggleComplete}
+                onDelete={deleteActivity}
+                onEdit={handleEdit}
+              />
+            ))
+          )}
+        </div>
       </div>
-
-      {/* Filter Tabs */}
-      <FilterTabs activeFilter={activeFilter} onFilterChange={setActiveFilter} />
-
-      {/* Activities List */}
-      <div className="mt-4 space-y-4">
-        {filteredActivities.length === 0 ? (
-          <EmptyState onAddClick={() => setShowForm(true)} />
-        ) : (
-          filteredActivities.map((activity) => (
-            <ActivityCard
-              key={activity.id}
-              activity={activity}
-              onToggleComplete={toggleComplete}
-              onDelete={deleteActivity}
-              onEdit={handleEdit}
-            />
-          ))
-        )}
-      </div>
-
-      {/* Floating Add Button */}
-      {activities.length > 0 && (
-        <FloatingAddButton onClick={() => setShowForm(true)} />
-      )}
 
       {/* Activity Form Modal */}
       {showForm && (
