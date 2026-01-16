@@ -45,7 +45,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-[env(safe-area-inset-top)]">
       <AppSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}

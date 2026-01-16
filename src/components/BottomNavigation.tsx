@@ -18,7 +18,7 @@ const BottomNavigation: React.FC<BottomNavigationProps> = ({ onAddClick }) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border z-40 safe-area-inset-bottom">
+    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-lg border-t border-border z-40 pb-[env(safe-area-inset-bottom)]">
       <div className="flex items-center justify-around h-16 px-2 max-w-lg mx-auto">
         {/* Prayer */}
         <NavLink

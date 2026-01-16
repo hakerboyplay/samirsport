@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Footprints, Receipt, Clock, BookOpen, Moon, Sun, Globe, X, BookMarked } from 'lucide-react';
+import { Footprints, Receipt, Clock, BookOpen, Moon, Sun, Globe, X, BookMarked, Wallet, CircleDot } from 'lucide-react';
+import TasbeehCounter from './TasbeehCounter';
 
 interface AppSidebarProps {
   isOpen: boolean;
@@ -13,10 +14,13 @@ interface AppSidebarProps {
 const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose, isDark, onToggleTheme }) => {
   const { t, language, setLanguage } = useLanguage();
   const location = useLocation();
+  const [showTasbeeh, setShowTasbeeh] = useState(false);
 
   const navItems = [
     { path: '/', icon: Footprints, labelAr: 'الأنشطة', labelEn: 'Activities' },
     { path: '/debts', icon: BookMarked, labelAr: 'الكناش', labelEn: 'Debts' },
+    { path: '/expenses', icon: Receipt, labelAr: 'فاتورة الأكل الصحي', labelEn: 'Food Expenses' },
+    { path: '/general-expenses', icon: Wallet, labelAr: 'المصاريف', labelEn: 'Expenses' },
     { path: '/prayer', icon: Clock, labelAr: 'الصلاة', labelEn: 'Prayer' },
     { path: '/quran', icon: BookOpen, labelAr: 'القرآن', labelEn: 'Quran' },
   ];
@@ -78,7 +82,21 @@ const AppSidebar: React.FC<AppSidebarProps> = ({ isOpen, onClose, isDark, onTogg
               </span>
             </NavLink>
           ))}
+          
+          {/* Tasbeeh Counter Button */}
+          <button
+            onClick={() => setShowTasbeeh(true)}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-foreground hover:bg-muted transition-colors"
+          >
+            <CircleDot className="w-5 h-5" />
+            <span className="font-medium">
+              {language === 'ar' ? 'عداد التسبيحات' : 'Tasbeeh Counter'}
+            </span>
+          </button>
         </nav>
+        
+        {/* Tasbeeh Counter Modal */}
+        <TasbeehCounter isOpen={showTasbeeh} onClose={() => setShowTasbeeh(false)} />
 
         {/* Settings */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border space-y-2">
