@@ -10,6 +10,28 @@ export const usePrayerTimesGPS = (latitude: number | null, longitude: number | n
   useEffect(() => {
     if (latitude === null || longitude === null) return;
 
+    const fetchLocationName = async () => {
+      try {
+        // Use OpenStreetMap Nominatim for reverse geocoding (free, no API key needed)
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&accept-language=ar`
+        );
+        
+        if (response.ok) {
+          const data = await response.json();
+          // Try to get city/town/village name
+          const address = data.address;
+          const cityName = address.city || address.town || address.village || address.municipality || address.county || address.state;
+          if (cityName) {
+            setLocationName(cityName);
+            return;
+          }
+        }
+      } catch (err) {
+        console.log('Reverse geocoding failed, using timezone fallback');
+      }
+    };
+
     const fetchPrayerTimes = async () => {
       setLoading(true);
       setError(null);
@@ -19,6 +41,9 @@ export const usePrayerTimesGPS = (latitude: number | null, longitude: number | n
         const day = today.getDate();
         const month = today.getMonth() + 1;
         const year = today.getFullYear();
+
+        // Fetch location name in parallel
+        fetchLocationName();
 
         const response = await fetch(
           `https://api.aladhan.com/v1/timings/${day}-${month}-${year}?latitude=${latitude}&longitude=${longitude}&method=19`
@@ -30,7 +55,6 @@ export const usePrayerTimesGPS = (latitude: number | null, longitude: number | n
 
         const data = await response.json();
         const timings = data.data.timings;
-        const meta = data.data.meta;
 
         setPrayerTimes({
           Fajr: timings.Fajr,
@@ -40,12 +64,6 @@ export const usePrayerTimesGPS = (latitude: number | null, longitude: number | n
           Maghrib: timings.Maghrib,
           Isha: timings.Isha,
         });
-
-        // Try to get location name from timezone or use coordinates
-        if (meta.timezone) {
-          const parts = meta.timezone.split('/');
-          setLocationName(parts[parts.length - 1].replace(/_/g, ' '));
-        }
       } catch (err) {
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
