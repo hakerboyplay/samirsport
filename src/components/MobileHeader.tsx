@@ -25,6 +25,8 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ onMenuClick }) => {
         return language === 'ar' ? 'حسابي' : 'My Profile';
       case '/debts':
         return language === 'ar' ? 'الكناش' : 'Debts Book';
+      case '/tasbeeh':
+        return language === 'ar' ? 'عداد التسبيحات' : 'Tasbeeh Counter';
       default:
         return t.activities;
     }

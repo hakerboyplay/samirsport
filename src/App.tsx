@@ -14,6 +14,7 @@ import Prayer from "./pages/Prayer";
 import Quran from "./pages/Quran";
 import Profile from "./pages/Profile";
 import Debts from "./pages/Debts";
+import Tasbeeh from "./pages/Tasbeeh";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -55,6 +56,7 @@ const App = () => {
                 <Route path="/quran" element={<Quran />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/debts" element={<Debts />} />
+                <Route path="/tasbeeh" element={<Tasbeeh />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </Layout>

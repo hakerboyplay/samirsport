@@ -84,7 +84,8 @@
 
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: 'Cairo', sans-serif;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 500;
   }
 
   html[dir="rtl"] {
@@ -126,14 +127,16 @@
   }
 
   .font-arabic {
-    font-family: 'Cairo', sans-serif;
+    font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+    font-weight: 500;
   }
 
   .font-quran {
     font-family: 'Noto Naskh Arabic', 'Amiri Quran', 'Traditional Arabic', serif;
-    font-size: 1.4em;
-    line-height: 2.2;
+    font-size: 1.5em;
+    line-height: 2.4;
     font-weight: 500;
+    letter-spacing: 0.02em;
   }
 
   .safe-area-inset-bottom {
