@@ -81,11 +81,11 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             transition={{ delay: 0.5, duration: 0.5 }}
             className="text-center"
           >
-            <h1 className="text-4xl font-bold text-white mb-2" style={{ fontFamily: 'Cairo, sans-serif' }}>
-              سمير سبورت
+            <h1 className="text-4xl font-bold text-white mb-2 font-arabic">
+              سمير 27
             </h1>
-            <p className="text-white/80 text-lg" style={{ fontFamily: 'Cairo, sans-serif' }}>
-              Samir Sport
+            <p className="text-white/80 text-lg font-arabic">
+              Samir 27
             </p>
           </motion.div>
 
@@ -120,8 +120,7 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ onComplete }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1.2 }}
-            className="absolute bottom-8 text-white/60 text-sm"
-            style={{ fontFamily: 'Cairo, sans-serif' }}
+            className="absolute bottom-8 text-white/60 text-sm font-arabic"
           >
             تتبع أنشطتك الرياضية
           </motion.p>
