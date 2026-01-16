@@ -15,6 +15,8 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ onMenuClick }) => {
     switch (location.pathname) {
       case '/expenses':
         return t.expenses;
+      case '/general-expenses':
+        return language === 'ar' ? 'المصاريف' : 'Expenses';
       case '/prayer':
         return t.prayerTimes;
       case '/quran':
@@ -29,7 +31,7 @@ const MobileHeader: React.FC<MobileHeaderProps> = ({ onMenuClick }) => {
   };
 
   return (
-    <header className="gradient-sport text-primary-foreground py-3 px-4 shadow-floating fixed top-0 left-0 right-0 z-30">
+    <header className="gradient-sport text-primary-foreground py-3 px-4 shadow-floating fixed top-[env(safe-area-inset-top)] left-0 right-0 z-30">
       <div className="flex items-center justify-between max-w-lg mx-auto">
         <button
           onClick={onMenuClick}
