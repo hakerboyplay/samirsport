@@ -66,9 +66,9 @@ export const useGeolocation = () => {
         });
       },
       {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 300000, // 5 minutes cache
+        enableHighAccuracy: false, // Use faster, less accurate location first
+        timeout: 30000, // Increase timeout to 30 seconds
+        maximumAge: 600000, // 10 minutes cache
       }
     );
   };
@@ -77,15 +77,23 @@ export const useGeolocation = () => {
     // Try to load from localStorage first
     const saved = localStorage.getItem('userLocation');
     if (saved) {
-      const { latitude, longitude } = JSON.parse(saved);
-      setState({
-        latitude,
-        longitude,
-        loading: false,
-        error: null,
-      });
+      try {
+        const { latitude, longitude } = JSON.parse(saved);
+        if (latitude && longitude) {
+          setState({
+            latitude,
+            longitude,
+            loading: false,
+            error: null,
+          });
+          // Don't auto-request if we have saved location - let user refresh manually
+          return;
+        }
+      } catch (e) {
+        console.log('Failed to parse saved location');
+      }
     }
-    // Then request fresh location
+    // Only request if no saved location
     requestLocation();
   }, []);
 
