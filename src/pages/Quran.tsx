@@ -117,7 +117,13 @@ const Quran: React.FC = () => {
                 // Remove Bismillah from first ayah if it's included (except for Al-Fatiha)
                 let ayahText = ayah.text;
                 if (index === 0 && surah.number !== 1 && surah.number !== 9) {
-                  ayahText = ayahText.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ\s*/, '');
+                  // Remove various forms of Bismillah from the beginning
+                  ayahText = ayahText
+                    .replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ\s*/, '')
+                    .replace(/^بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ ٱلرَّحِيمِ\s*/, '')
+                    .replace(/^بسم الله الرحمن الرحيم\s*/, '')
+                    .replace(/^۞?\s*/, '')
+                    .trim();
                 }
                 
                 return (
