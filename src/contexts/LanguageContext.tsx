@@ -58,7 +58,7 @@ interface Translations {
 
 const translations: Record<Language, Translations> = {
   ar: {
-    appName: 'سمير سبورت',
+    appName: 'سمير 27',
     activities: 'الأنشطة',
     addActivity: 'إضافة نشاط',
     today: 'اليوم',
@@ -111,7 +111,7 @@ const translations: Record<Language, Translations> = {
     adhkar: 'الأذكار',
   },
   en: {
-    appName: 'Samir Sport',
+    appName: 'Samir 27',
     activities: 'Activities',
     addActivity: 'Add Activity',
     today: 'Today',
