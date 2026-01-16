@@ -113,24 +113,32 @@ const Quran: React.FC = () => {
         ) : (
           <div className="bg-card rounded-2xl p-6 border border-border">
             <div className="text-center leading-[3] font-quran text-foreground">
-              {surah.ayahs.map((ayah) => (
-                <span 
-                  key={ayah.number} 
-                  id={`ayah-${ayah.numberInSurah}`}
-                  className={`inline ${
-                    readingPosition?.surahNumber === surah.number && 
-                    readingPosition?.ayahNumber === ayah.numberInSurah 
-                      ? 'bg-primary/10 rounded px-1' 
-                      : ''
-                  }`}
-                  onClick={() => saveReadingPosition(surah.number, surah.name, ayah.numberInSurah)}
-                >
-                  {ayah.text}
-                  <span className="inline-flex items-center justify-center mx-1 text-primary text-sm align-middle cursor-pointer hover:scale-110 transition-transform">
-                    ﴿{getAyahNumber(ayah.numberInSurah)}﴾
+              {surah.ayahs.map((ayah, index) => {
+                // Remove Bismillah from first ayah if it's included (except for Al-Fatiha)
+                let ayahText = ayah.text;
+                if (index === 0 && surah.number !== 1 && surah.number !== 9) {
+                  ayahText = ayahText.replace(/^بِسْمِ ٱللَّهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ\s*/, '');
+                }
+                
+                return (
+                  <span 
+                    key={ayah.number} 
+                    id={`ayah-${ayah.numberInSurah}`}
+                    className={`inline ${
+                      readingPosition?.surahNumber === surah.number && 
+                      readingPosition?.ayahNumber === ayah.numberInSurah 
+                        ? 'bg-primary/10 rounded px-1' 
+                        : ''
+                    }`}
+                    onClick={() => saveReadingPosition(surah.number, surah.name, ayah.numberInSurah)}
+                  >
+                    {ayahText}
+                    <span className="inline-flex items-center justify-center mx-1 text-primary text-sm align-middle cursor-pointer hover:scale-110 transition-transform">
+                      ﴿{getAyahNumber(ayah.numberInSurah)}﴾
+                    </span>
                   </span>
-                </span>
-              ))}
+                );
+              })}
             </div>
             
             {/* Reading Position Indicator */}
